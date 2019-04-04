@@ -1,5 +1,3 @@
-# Digital-World-1D
-
 ## Database module
 
 The database module requires that a `credentials` file containing the database configuration be placed in the same folder as it is.
