@@ -32,7 +32,7 @@ class Database:
     
     def pushRAW(self, content, directory=''):
         directory = '/RAWDATA/{}/{}'.format(self.roomID, directory.strip('/'))
-        existing = self.transduce(self.pullRAW)
+        existing = self.transduce(self.pullRAW())
         existing.update(content)
         self._push(directory, existing)
     
