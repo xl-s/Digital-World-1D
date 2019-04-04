@@ -3,7 +3,7 @@
 ## Database module
 
 The database module requires that a `credentials` file containing the database configuration be placed in the same folder as it is.
-A Database object should be instantiated with a room ID, after which, the attributes .Occupied and .Bookings may be used to set or get the room occupancy status and list of bookings respectively.
+A Database object should be instantiated with a room ID, after which, the attributes `.Occupied` and `.Bookings` may be used to set or get the room occupancy status and list of bookings respectively.
 
 Example:
 
