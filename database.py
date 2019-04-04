@@ -18,6 +18,12 @@ class Database:
         firebase = pyrebase.initialize_app(self.config)
         self.db = firebase.database()
         
+    def transduce(self, pyredata):
+        data = {}
+        for dat in pyredata.each():
+            data[dat.key()] = dat.val()
+        return data
+        
     def _push(self, directory, content):
         self.db.child(directory).set(content)
     
@@ -26,7 +32,9 @@ class Database:
     
     def pushRAW(self, content, directory=''):
         directory = '/RAWDATA/{}/{}'.format(self.roomID, directory.strip('/'))
-        self._push(directory, content)
+        existing = self.transduce(self.pullRAW)
+        existing.update(content)
+        self._push(directory, existing)
     
     def pushAPP(self, content, directory=''):
         directory = '/APPDATA/{}/{}'.format(self.roomID, directory.strip('/'))
@@ -57,10 +65,7 @@ class Database:
     
     def saveRAW(self, filename='RAWDATA'):
         filename += '.json'
-        pyredata = self.pullRAW()
-        data = {}
-        for dat in pyredata.each():
-            data[dat.key()] = dat.val()
+        data = self.transduce(self.pullRAW())
         jsondata = json.dumps(data)
         with open(filename, 'w+') as file:
             file.write(jsondata)
