@@ -7,6 +7,7 @@ Created on Thu Apr  4 15:04:03 2019
 
 from libdw import pyrebase
 import json
+import hashlib
 
 class Database:
 
@@ -32,12 +33,16 @@ class Database:
     
     def pushRAW(self, content, directory=''):
         directory = '/RAWDATA/{}/{}'.format(self.roomID, directory.strip('/'))
-        existing = self.transduce(self.pullRAW())
+        existing = self.transduce(self.pullRAW)
         existing.update(content)
         self._push(directory, existing)
     
     def pushAPP(self, content, directory=''):
         directory = '/APPDATA/{}/{}'.format(self.roomID, directory.strip('/'))
+        self._push(directory, content)
+        
+    def pushUSERS(self, content, directory=''):
+        directory = '/USERS/{}'.format(directory.strip('/'))
         self._push(directory, content)
         
     def pullRAW(self, directory=''):
@@ -46,6 +51,10 @@ class Database:
     
     def pullAPP(self, directory=''):
         directory = '/APPDATA/{}/{}'.format(self.roomID, directory.strip('/'))
+        return self._pull(directory)
+    
+    def pullUSERS(self, directory=''):
+        directory = '/USERS/{}'.format(directory.strip('/'))
         return self._pull(directory)
     
     def _getBookings(self):
@@ -60,6 +69,14 @@ class Database:
     def _setOccupied(self, occupancy):
         self.pushAPP(occupancy, 'OCCUPIED')
         
+    def login(self, username, password):
+        p = hashlib.sha256()
+        u = hashlib.sha256()
+        p.update(bytes(password, encoding='utf-8'))
+        u.update(bytes(username, encoding='utf-8'))
+        user = self.pullUSERS(u.hexdigest()).val()
+        return True if p.hexdigest() == user else False
+      
     Bookings = property(_getBookings, _setBookings)
     Occupied = property(_getOccupied, _setOccupied)
     
