@@ -1,6 +1,7 @@
 ## Database module
 
 _Update 5 April: login() and register() added_
+
 _.Bookings assignment changed such that bookings should be added with addBooking()_
 
 The database module requires that a `credentials` file containing the database configuration be placed in the same folder as it is.
