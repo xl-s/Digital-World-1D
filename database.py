@@ -90,7 +90,11 @@ class Database:
     def register(self, username, password):
         p = self._getHash(password)
         u = self._getHash(username)
-        self.pushUSERS(p, u)
+        if u not in self.pullUSERS().keys():
+            self.pushUSERS({u:p})
+            return True
+        else:
+            return False
       
     Bookings = property(_getBookings, _setBookings)
     Occupied = property(_getOccupied, _setOccupied)
