@@ -24,6 +24,11 @@ class Database:
         for dat in pyredata.each():
             data[dat.key()] = dat.val()
         return data
+    
+    def getHash(self, data):
+        h = hashlib.sha256()
+        h.update(bytes(data, encoding='utf-8'))
+        return h.hexdigest()
         
     def _push(self, directory, content):
         self.db.child(directory).set(content)
@@ -33,7 +38,7 @@ class Database:
     
     def pushRAW(self, content, directory=''):
         directory = '/RAWDATA/{}/{}'.format(self.roomID, directory.strip('/'))
-        existing = self.transduce(self.pullRAW)
+        existing = self.transduce(self.pullRAW())
         existing.update(content)
         self._push(directory, existing)
     
@@ -70,12 +75,15 @@ class Database:
         self.pushAPP(occupancy, 'OCCUPIED')
         
     def login(self, username, password):
-        p = hashlib.sha256()
-        u = hashlib.sha256()
-        p.update(bytes(password, encoding='utf-8'))
-        u.update(bytes(username, encoding='utf-8'))
-        user = self.pullUSERS(u.hexdigest()).val()
-        return True if p.hexdigest() == user else False
+        p = self.getHash(password)
+        u = self.getHash(username)
+        pw = self.pullUSERS(u).val()
+        return True if p == pw else False
+    
+    def register(self, username, password):
+        p = self.getHash(password)
+        u = self.getHash(username)
+        self.pushUSERS(p, u)
       
     Bookings = property(_getBookings, _setBookings)
     Occupied = property(_getOccupied, _setOccupied)
@@ -88,6 +96,5 @@ class Database:
             file.write(jsondata)
         # Use dict(json.load(file)) to convert .json to dictionary
         # It is also possible to operate on the json object itself.
-    
     
     
