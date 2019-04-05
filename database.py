@@ -25,7 +25,7 @@ class Database:
             data[dat.key()] = dat.val()
         return data
     
-    def getHash(self, data):
+    def _getHash(self, data):
         h = hashlib.sha256()
         h.update(bytes(data, encoding='utf-8'))
         return h.hexdigest()
@@ -75,14 +75,14 @@ class Database:
         self.pushAPP(occupancy, 'OCCUPIED')
         
     def login(self, username, password):
-        p = self.getHash(password)
-        u = self.getHash(username)
+        p = self._getHash(password)
+        u = self._getHash(username)
         pw = self.pullUSERS(u).val()
         return True if p == pw else False
     
     def register(self, username, password):
-        p = self.getHash(password)
-        u = self.getHash(username)
+        p = self._getHash(password)
+        u = self._getHash(username)
         self.pushUSERS(p, u)
       
     Bookings = property(_getBookings, _setBookings)
