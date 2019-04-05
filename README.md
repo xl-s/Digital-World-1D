@@ -26,4 +26,4 @@ room.addBooking(newbooking)     # To add a new booking
 
 ```
 
-The methods `login(username, password)` and `register(username, password)` have been implemented for convenient and secure authentication with the database. `login()` returns True if the login data is valid, and `register()` may be used to enroll new sets of login data with the database.
+The methods `login(username, password)` and `register(username, password)` have been implemented for convenient and secure authentication with the database. `login()` returns True if the login data is valid, and `register()` may be used to enroll new sets of login data with the database. `register()` returns True if the login data has been successfully enrolled, or False if it was not enrolled (i.e. the username already exists).
