@@ -56,7 +56,7 @@ class Database:
 
 
     def _getBookings(self):
-        self.pushAPP(False, 'BOOKINGS/NEW')
+        self.pushAPP(False, 'NEW')
         return [booking for booking in self.pullAPP('BOOKINGS').values()]
     
 
@@ -102,7 +102,7 @@ class Database:
 
     def addBooking(self, booking):
         self.db.child('/APPDATA/{}/BOOKINGS'.format(self.roomID)).push(booking)
-        self.pushAPP(True, 'BOOKINGS/NEW')
+        self.pushAPP(True, 'NEW')
     
 
     def login(self, username, password):
@@ -123,7 +123,7 @@ class Database:
 
 
     def new(self):
-        return True if self.pullAPP('BOOKINGS/NEW') else False
+        return True if self.pullAPP('NEW') else False
     
     
     def saveRAW(self, filename='RAWDATA'):
