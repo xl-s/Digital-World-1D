@@ -18,19 +18,11 @@ class Database:
         firebase = pyrebase.initialize_app(config)
         self.db = firebase.database()
         
-
     def _transduce(self, pyredata):
         data = {}
         for dat in pyredata.each():
             data[dat.key()] = dat.val()
         return data
-    
-
-    def _getHash(self, data):
-        h = hashlib.sha256()
-        h.update(bytes(data, encoding='utf-8'))
-        return h.hexdigest()
-        
 
     def _push(self, directory, content):
         if hasattr(content, '__iter__'):
@@ -45,6 +37,14 @@ class Database:
             return self._transduce(data)
         else:
             return data.val()
+    
+
+    def _getHash(self, data):
+        h = hashlib.sha256()
+        h.update(bytes(data, encoding='utf-8'))
+        return h.hexdigest()
+        
+
 
 
     def _getOccupied(self):
