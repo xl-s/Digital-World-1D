@@ -114,6 +114,8 @@ raspberry = Hardware(LEDS, PINS)
 
 ##### Interfacing with the Raspberry Pi
 
+The hardware module contains only two user-end methods necessary to retrieve sensor data from the Raspberry Pi and update the status of the indicator LEDs.
+
 ###### `Hardware.update(booked, occupied)`
 
 The `Hardware.update(booked, occupied)` method is used to update the states of LED indicators inside and outside the room, based on the booking and occupancy status of the room. The `booked` and `occupied` parameters are both boolean values, indicating respectively whether the room is currently booked and occupied.
