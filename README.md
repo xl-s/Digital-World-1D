@@ -10,7 +10,7 @@ Note that all of the database module functions are designed to prevent deletion 
 
 #### Raspberry Pi Program Setup
 
-To begin the running the Raspberry Pi program, change the `ROOMID` variable of the `main.py` file to the appropriate room ID. Note that the room ID should not contain periods (`.`), but can contain underscores (`_`) and dashes (`-`). The `PINS` and `LEDS` dictionaries should also be changed as needed if a different pin mapping is being used than the default one. Then simply run the `main.py` program.
+To begin the running the Raspberry Pi program, change the `ROOMID` variable of the `main.py` file to the appropriate room ID. Note that the room ID should not contain periods (`.`), but can contain underscores (`_`) and dashes (`-`). The `PINS` and `LEDS` dictionaries should also be changed as needed if a different pin mapping than the default one is being used. Then simply run the `main.py` program.
 
 ### Database Module Usage
 
