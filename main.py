@@ -10,12 +10,14 @@ from hardware import Hardware
 from time import sleep, strftime
 from datetime import datetime
 
-#NOTE: Modules containing libdw should be imported before Kivy!
+
+###############################################################################
+ROOMID = '1_413-01'    # Change this to the correct ID before running!
+###############################################################################
 
 
-ROOMID = '1_413-01'
-LEDS = {}
-PINS = {'PIR':25, 'Sound':24, 'HumidityTemperature':23}
+LEDS = {'YELLOW':27, 'GREEN':17}
+PINS = {'PIR':[5, 6, 22, 25], 'Sound':24, 'HumidityTemperature':23, 'Human':18}
 period = 1
 bookings = {}
 
@@ -32,6 +34,7 @@ def before(first, second):
 
 def checkBooked(books, now):
     # Condition: Starts before and ends after now.
+    if not books: return False
     for booking in books:
         if before(booking['start'], now) and before(now, booking['end']):
             return True
@@ -39,7 +42,7 @@ def checkBooked(books, now):
 
 
 def checkOccupied(data):
-    pass
+    return True if data['PIR'] else False
 
 
 def main():
@@ -56,8 +59,8 @@ def main():
     # Check if room is currently being booked. NOTE: Bookings should be made up to the minute!
     booked = checkBooked(bookings, (now.year, now.month, now.day, now.hour, now.minute))
     # NOTE: Ensure that app side checks for booking conflicts.
-    # Update lights as appropriate
-    raspberry.update(booked, occupied) ###
+    # Update booked lights as appropriate
+    raspberry.update(booked=booked)
     # Update database with occupancy
     room.Occupied = occupied
     # Update database with raw data
@@ -71,6 +74,7 @@ def loop():
 
 
 def init():
+    assert ROOMID
     global room
     global raspberry
     global bookings
