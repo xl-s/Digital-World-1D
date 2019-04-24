@@ -60,6 +60,14 @@ new_booking = {'start':(2019, 4, 25, 15, 0),
 room.addBooking(new_booking)    # Add a booking on 2019-04-25 from 3:00 pm to 4:00 pm
 ```
 
+##### `Database.removeBooking(booking)`
+
+To remove a booking from the database, the `Database.removeBooking(booking)` method should be used.
+
+```python
+room.removeBooking(new_booking)    # Remove the booking we just made
+```
+
 ##### `Database.login(username, password)`
 
 The `Database.login(username, password)` method takes in a username and password pair as input. It returns `True` if the username-password pair is valid based on the login information in `USERS`, and `False` otherwise.
