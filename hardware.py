@@ -17,7 +17,7 @@ class Hardware:
         self.leds = leds
         self.pins = pins
         GPIO.setmode(GPIO.BCM)
-        # GPIO.setup(self.leds.values(), GPIO.OUT)
+        GPIO.setup(self.leds.values(), GPIO.OUT)
 
         self.HumidityTemperature = Adafruit_DHT.DHT11
 
@@ -26,19 +26,26 @@ class Hardware:
         self.Light = SMBus(1)
 
         GPIO.setup(self.pins['PIR'], GPIO.IN)
-        GPIO.add_event_detect(self.pins['PIR'], GPIO.RISING, callback=self._onPIR)
+        for pin in self.pins['PIR']:
+            GPIO.add_event_detect(pin, GPIO.RISING, callback=self._onPIR)
         self.PIRON = False
 
         GPIO.setup(self.pins['Sound'], GPIO.IN)
         GPIO.add_event_detect(self.pins['Sound'], GPIO.RISING, callback=self._onSound)
         self.SOUNDON = False
 
+        GPIO.setup(self.pins['Human'], GPIO.IN)
+        GPIO.add_event_detect(self.pins['Human'], GPIO.RISING, callback=self._onHuman)
+        self.HUMANON = False
+
     def _set(self, led, state):
-    	pass
+        if state:
+            GPIO.output(led, GPIO.HIGH)
+        else:
+            GPIO.output(led, GPIO.LOW)
 
     def _getHumidityTemperature(self):
         humidity, temperature = Adafruit_DHT.read_retry(self.HumidityTemperature, self.pins['HumidityTemperature'])
-        # Consider using read_retry instead if consistently returning None
         return humidity, temperature
 
     def _getLight(self):
@@ -72,10 +79,23 @@ class Hardware:
         reading = ((reading << 8) & 0xFF00) + (reading >> 8)
         return (reading / 32.0) / 8.0
 
+    def _onHuman(self, *args):
+        self.HUMANON = True
 
-    def update(self, booked, occupied):
-        self._set(self.leds['IN'], booked)
-        self._set(self.leds['OUT'], occupied)
+    def _getHuman(self):
+        if self.HUMANON:
+            self.HUMANON = False
+            return 1
+        else:
+            return 0
+
+    def update(self, booked=None, occupied=None):
+        if booked:
+            self._set(self.leds['YELLOW'], booked)
+            self._set(self.leds['GREEN'], (not booked))
+        if occupied:
+            self._set(self.leds['YELLOW'], occupied)
+            self._set(self.leds['GREEN'], (not occupied))
         # Sets the appropriate lighting/screen based on the booked and occupied status
 
     def download(self):
@@ -84,6 +104,8 @@ class Hardware:
         data['Light'] = self._getLight()
         data['Sound'] = self._getSound()
         data['PIR'] = self._getPIR()
+        data['Human'] = self._getHuman()
+        print(data)
         return data
         # Returns dictionary of sensors and their respective values
 
